@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puzzle Oyunu</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    #puzzle { display: grid; grid-template-columns: repeat(3, 100px); gap: 5px; margin: 20px auto; width: max-content; }
+    .piece { width: 100px; height: 100px; border: 1px solid #ccc; background-size: 300px 300px; cursor: grab; }
+  </style>
+</head>
+<body>
+  <h1>🧩 Puzzle Oyunu</h1>
+  <p>Parçaları doğru sıraya sürükle ve bırak!</p>
+  <div id="puzzle"></div>
+
+  <script>
+    // Puzzle resmi (bunu istediğin URL ile değiştirebilirsin)
+    const imgURL = "https://picsum.photos/300"; 
+    const puzzle = document.getElementById("puzzle");
+    let pieces = [];
+
+    // Parçaları oluştur
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        const piece = document.createElement("div");
+        piece.classList.add("piece");
+        piece.style.backgroundImage = `url(${imgURL})`;
+        piece.style.backgroundPosition = `-${col * 100}px -${row * 100}px`;
+        piece.draggable = true;
+        pieces.push(piece);
+      }
+    }
+
+    // Parçaları karıştır
+    pieces.sort(() => Math.random() - 0.5);
+    pieces.forEach(p => puzzle.appendChild(p));
+
+    // Sürükle-bırak
+    let dragged;
+    puzzle.addEventListener("dragstart", e => dragged = e.target);
+    puzzle.addEventListener("dragover", e => e.preventDefault());
+    puzzle.addEventListener("drop", e => {
+      e.preventDefault();
+      if (e.target.classList.contains("piece")) {
+        let temp = document.createElement("div");
+        puzzle.replaceChild(temp, dragged);
+        puzzle.replaceChild(dragged, e.target);
+        puzzle.replaceChild(e.target, temp);
+      }
+    });
+  </script>
+</body>
+</html>
